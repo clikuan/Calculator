@@ -66,25 +66,29 @@
 
 - (IBAction)pushDivide:(id)sender
 {
-
+    [self operation:@"/"];
 }
 
 - (IBAction)pushMultiply:(id)sender
 {
-    
+    [self operation:@"*"];
 }
 
 - (IBAction)pushSubstract:(id)sender
 {
-    
+    [self operation:@"-"];
 }
-
-- (IBAction)pushAdd:(id)sender
+- (void)operation:(NSString *) op
 {
+    NSDictionary * opDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                            @"decimalNumberByAdding:", @"+",
+                            @"decimalNumberBySubtracting:", @"-",
+                            @"decimalNumberByMultiplyingBy:", @"*",
+                            @"decimalNumberByDividingBy:", @"/", nil];
     if(self.operatorSelector == nil){
         self.leftOperand = [NSDecimalNumber decimalNumberWithString:self.currentTextField.stringValue];
-        self.operatorSelector = @"decimalNumberByAdding:";
-        self.currentTextField.stringValue = [self.currentTextField.stringValue stringByAppendingString:@"+"];
+        self.operatorSelector = opDic[op];
+        self.currentTextField.stringValue = [self.currentTextField.stringValue stringByAppendingString: op];
         self.splitPostion = self.currentTextField.stringValue.length;
     }
     else{
@@ -93,15 +97,31 @@
             return;
         self.leftOperand = [self.leftOperand performSelector:NSSelectorFromString(self.operatorSelector) withObject: self.rightOperand];
         self.resultTextField.stringValue = self.leftOperand.stringValue;
-        self.currentTextField.stringValue = [self.leftOperand.stringValue stringByAppendingString:@"+"];
-        self.operatorSelector = @"decimalNumberByAdding:";
+        self.currentTextField.stringValue = [self.leftOperand.stringValue stringByAppendingString: op];
+        self.operatorSelector = opDic[op];
         self.rightOperand = nil;
     }
+}
+- (IBAction)pushAdd:(id)sender
+{
+    [self operation:@"+"];
 }
 
 - (IBAction)pushEqual:(id)sender
 {
-
+    if(self.operatorSelector == nil){
+        return;
+    }
+    else{
+        self.rightOperand = [NSDecimalNumber decimalNumberWithString:[self.currentTextField.stringValue substringFromIndex:self.splitPostion]];
+        if(self.rightOperand == nil)
+            return;
+        self.leftOperand = [self.leftOperand performSelector:NSSelectorFromString(self.operatorSelector) withObject: self.rightOperand];
+        self.resultTextField.stringValue = self.leftOperand.stringValue;
+        self.currentTextField.stringValue = self.leftOperand.stringValue;
+        self.operatorSelector = nil;
+        self.rightOperand = nil;
+    }
 }
 
 - (IBAction)pushPoint:(id)sender
