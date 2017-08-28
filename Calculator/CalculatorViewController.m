@@ -14,6 +14,8 @@
 @property (nonatomic, strong) NSDecimalNumber* rightOperand;
 @property (nonatomic, strong) NSString *operatorSelector;
 @property (nonatomic, assign) NSUInteger splitPostion;
+@property (nonatomic, strong) NSDictionary * opDic;
+
 
 @end
 
@@ -23,7 +25,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    self.opDic = [NSDictionary dictionaryWithObjectsAndKeys:
+                @"decimalNumberByAdding:", @"+",
+                @"decimalNumberBySubtracting:", @"-",
+                @"decimalNumberByMultiplyingBy:", @"*",
+                @"decimalNumberByDividingBy:", @"/", nil];
     // Do any additional setup after loading the view.
 }
 
@@ -80,25 +86,33 @@
 }
 - (void)operation:(NSString *) op
 {
-    NSDictionary * opDic = [NSDictionary dictionaryWithObjectsAndKeys:
-                            @"decimalNumberByAdding:", @"+",
-                            @"decimalNumberBySubtracting:", @"-",
-                            @"decimalNumberByMultiplyingBy:", @"*",
-                            @"decimalNumberByDividingBy:", @"/", nil];
+    
     if(self.operatorSelector == nil){
         self.leftOperand = [NSDecimalNumber decimalNumberWithString:self.currentTextField.stringValue];
-        self.operatorSelector = opDic[op];
+        self.operatorSelector = self.opDic[op];
         self.currentTextField.stringValue = [self.currentTextField.stringValue stringByAppendingString: op];
         self.splitPostion = self.currentTextField.stringValue.length;
+    }
+    else if(![self.operatorSelector isEqualToString: self.opDic[op]]){
+        return;
     }
     else{
         self.rightOperand = [NSDecimalNumber decimalNumberWithString:[self.currentTextField.stringValue substringFromIndex:self.splitPostion]];
         if(self.rightOperand == nil)
             return;
+        if([self.rightOperand.stringValue isEqualToString:@"0"] &&
+           [self.operatorSelector isEqualToString:self.opDic[@"/"]]){ //Divided by zero
+            NSAlert *alert = [[NSAlert alloc] init];
+            alert.messageText = @"Warning";
+            alert.informativeText = @"Can not divided by zero";
+            [alert addButtonWithTitle:@"OK"];
+            [alert runModal];
+            return;
+        }
         self.leftOperand = [self.leftOperand performSelector:NSSelectorFromString(self.operatorSelector) withObject: self.rightOperand];
         self.resultTextField.stringValue = self.leftOperand.stringValue;
         self.currentTextField.stringValue = [self.leftOperand.stringValue stringByAppendingString: op];
-        self.operatorSelector = opDic[op];
+        self.operatorSelector = self.opDic[op];
         self.rightOperand = nil;
     }
 }
@@ -116,6 +130,15 @@
         self.rightOperand = [NSDecimalNumber decimalNumberWithString:[self.currentTextField.stringValue substringFromIndex:self.splitPostion]];
         if(self.rightOperand == nil)
             return;
+        if([self.rightOperand.stringValue isEqualToString:@"0"] &&
+           [self.operatorSelector isEqualToString:self.opDic[@"/"]]){ //Divided by zero
+            NSAlert *alert = [[NSAlert alloc] init];
+            alert.messageText = @"Warning";
+            alert.informativeText = @"Can not divided by zero";
+            [alert addButtonWithTitle:@"OK"];
+            [alert runModal];
+            return;
+        }
         self.leftOperand = [self.leftOperand performSelector:NSSelectorFromString(self.operatorSelector) withObject: self.rightOperand];
         self.resultTextField.stringValue = self.leftOperand.stringValue;
         self.currentTextField.stringValue = self.leftOperand.stringValue;
@@ -193,7 +216,7 @@
         self.currentTextField.stringValue = @"8";
         return;
     }
-    self.currentTextField.stringValue = [self.currentTextField.stringValue stringByAppendingString: @"9"];
+    self.currentTextField.stringValue = [self.currentTextField.stringValue stringByAppendingString: @"8"];
 }
 - (IBAction)push9:(id)sender
 {
