@@ -27,6 +27,8 @@
 - (IBAction)pushEqual:(id)sender;
 - (IBAction)pushPoint:(id)sender;
 - (IBAction)pushDel:(id)sender;
+- (IBAction)pushAc:(id)sender;
+- (IBAction)pushRoot:(id)sender;
 
 - (IBAction)push1:(id)sender;
 - (IBAction)push2:(id)sender;

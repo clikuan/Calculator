@@ -224,6 +224,12 @@
     }
 }
 
+- (IBAction)pushAc:(id)sender {
+}
+
+- (IBAction)pushRoot:(id)sender {
+}
+
 - (IBAction)push1:(id)sender
 {
     if([self.currentTextField.stringValue isEqualToString:@"0"]){
