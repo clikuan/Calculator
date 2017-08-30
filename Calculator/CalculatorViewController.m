@@ -154,6 +154,14 @@
     self.currentTextField.stringValue = [self.currentTextField.stringValue stringByAppendingString: @"."];
 }
 
+- (IBAction)pushDel:(id)sender
+{
+    if(![self.currentTextField.stringValue isEqualToString:@""]){
+        self.currentTextField.stringValue = [self.currentTextField.stringValue substringWithRange:NSMakeRange(0, self.currentTextField.stringValue.length-1)];
+    }
+
+}
+
 - (IBAction)push1:(id)sender
 {
     if([self.currentTextField.stringValue isEqualToString:@"0"]){

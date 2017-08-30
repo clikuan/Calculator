@@ -952,6 +952,17 @@
                                             <action selector="pushPoint:" target="XfG-lQ-9wD" id="itU-T3-JYk"/>
                                         </connections>
                                     </button>
+                                    <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="URq-8o-UM3">
+                                        <rect key="frame" x="235" y="113" width="60" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="smallSquare" title="␡" bezelStyle="smallSquare" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" sound="Frog" inset="2" id="ggJ-EU-FRL">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" size="32" name=".PingFangTC-Regular"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="pushDel:" target="XfG-lQ-9wD" id="CBY-xC-13V"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                             </customView>
                         </subviews>
