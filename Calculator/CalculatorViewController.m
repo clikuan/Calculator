@@ -163,22 +163,65 @@
         [self performSelector:@selector(pushMC:) withObject:nil];
     }
     else{
-        
-        NSString *pattern = @"[0-9]+[+-*/][0-9]+";
-
-        NSError* error = NULL;
-        
-        NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern: pattern options:0 error:&error];
-        NSArray* matches = [regex matchesInString:self.currentTextField.stringValue options:0 range: NSMakeRange(0, self.currentTextField.stringValue.length)];
-        for (NSTextCheckingResult* match in matches) {
-            NSString* matchText = [self.currentTextField.stringValue substringWithRange:[match range]];
-            NSLog(@"match: %@", matchText);
-            NSRange group1 = [match rangeAtIndex:1];
-            NSRange group2 = [match rangeAtIndex:2];
-            NSLog(@"group1: %@", [self.currentTextField.stringValue substringWithRange:group1]);
-            NSLog(@"group2: %@", [self.currentTextField.stringValue substringWithRange:group2]);
+        NSString *pattern1 = @"[0-9]+[+*/-][0-9]+"; //123+456
+        NSString *pattern2 = @"[0-9]+[+*/-]"; //123+
+        NSPredicate *test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern1];
+        NSUInteger i;
+        BOOL matches = [test evaluateWithObject:self.currentTextField.stringValue];
+        if(matches){
+            for(i = 0; i < self.currentTextField.stringValue.length; i++){
+                if([[self.currentTextField.stringValue substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"+"]){
+                    self.operatorSelector = self.opDic[@"+"];
+                    break;
+                }
+                else if([[self.currentTextField.stringValue substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"-"]){
+                    self.operatorSelector = self.opDic[@"-"];
+                    break;
+                }
+                else if([[self.currentTextField.stringValue substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"*"]){
+                    self.operatorSelector = self.opDic[@"*"];
+                    break;
+                }
+                else if([[self.currentTextField.stringValue substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"/"]){
+                    self.operatorSelector = self.opDic[@"/"];
+                    break;
+                }
+            }
+            self.leftOperand = [NSDecimalNumber decimalNumberWithString: [self.currentTextField.stringValue substringWithRange:NSMakeRange(0, i)]];
+            self.rightOperand = [NSDecimalNumber decimalNumberWithString: [self.currentTextField.stringValue substringWithRange:NSMakeRange(i+1, self.currentTextField.stringValue.length-i-1)]];
         }
-   }
+        else{
+            test = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", pattern2];
+            matches = [test evaluateWithObject:self.currentTextField.stringValue];
+            if(matches){
+                self.rightOperand = nil;
+                for(i = 0; i < self.currentTextField.stringValue.length; i++){
+                    if([[self.currentTextField.stringValue substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"+"]){
+                        self.operatorSelector = self.opDic[@"+"];
+                        break;
+                    }
+                    else if([[self.currentTextField.stringValue substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"-"]){
+                        self.operatorSelector = self.opDic[@"-"];
+                        break;
+                    }
+                    else if([[self.currentTextField.stringValue substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"*"]){
+                        self.operatorSelector = self.opDic[@"*"];
+                        break;
+                    }
+                    else if([[self.currentTextField.stringValue substringWithRange:NSMakeRange(i, 1)] isEqualToString:@"/"]){
+                        self.operatorSelector = self.opDic[@"/"];
+                        break;
+                    }
+                }
+                self.leftOperand = [NSDecimalNumber decimalNumberWithString: [self.currentTextField.stringValue substringWithRange:NSMakeRange(0, i)]];
+            }
+            else{
+                self.leftOperand = [NSDecimalNumber decimalNumberWithString: self.currentTextField.stringValue];
+                self.rightOperand = nil;
+                self.operatorSelector = nil;
+            }
+        }
+    }
 }
 
 - (IBAction)push1:(id)sender
