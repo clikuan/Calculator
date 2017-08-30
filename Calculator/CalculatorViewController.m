@@ -157,9 +157,28 @@
 - (IBAction)pushDel:(id)sender
 {
     if(![self.currentTextField.stringValue isEqualToString:@""]){
-        self.currentTextField.stringValue = [self.currentTextField.stringValue substringWithRange:NSMakeRange(0, self.currentTextField.stringValue.length-1)];
+        self.currentTextField.stringValue = [ self.currentTextField.stringValue substringWithRange:NSMakeRange(0, self.currentTextField.stringValue.length-1)];
     }
+    if([self.currentTextField.stringValue isEqualToString:@""]){
+        [self performSelector:@selector(pushMC:) withObject:nil];
+    }
+    else{
+        
+        NSString *pattern = @"[0-9]+[+-*/][0-9]+";
 
+        NSError* error = NULL;
+        
+        NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern: pattern options:0 error:&error];
+        NSArray* matches = [regex matchesInString:self.currentTextField.stringValue options:0 range: NSMakeRange(0, self.currentTextField.stringValue.length)];
+        for (NSTextCheckingResult* match in matches) {
+            NSString* matchText = [self.currentTextField.stringValue substringWithRange:[match range]];
+            NSLog(@"match: %@", matchText);
+            NSRange group1 = [match rangeAtIndex:1];
+            NSRange group2 = [match rangeAtIndex:2];
+            NSLog(@"group1: %@", [self.currentTextField.stringValue substringWithRange:group1]);
+            NSLog(@"group2: %@", [self.currentTextField.stringValue substringWithRange:group2]);
+        }
+   }
 }
 
 - (IBAction)push1:(id)sender
